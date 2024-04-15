@@ -1,18 +1,6 @@
-version: '3.8'
+version: '3'
 services:
-    php-apache-environment:
-        container_name: php-apache
-        build:
-            context: ./
-            dockerfile: Dockerfile
-        depends_on:
-            - db
-        volumes:
-            - ./bloodbank:/var/www/html
-        ports:
-            - 8000:80
     db:
-        container_name: db
         image: mysql
         restart: always
         environment:
@@ -20,16 +8,31 @@ services:
             MYSQL_DATABASE: bloodbank_db
             MYSQL_USER: gourish
             MYSQL_PASSWORD: Gourish@12
-        ports:
-            - "9906:3306"
         volumes:
-            - ./database:/docker-entrypoint-initdb.d  # Mount the database directory for initialization
+            - "./database:/docker-entrypoint-initdb.d"  # Mount the database directory for initialization
+        networks:
+            - lamb-docker
+    php-apache-environment:
+        depends_on:
+            - db
+        image: php:8.1.1-apache
+        volumes:
+            - "./:/var/www/html"
+        ports:
+            - 8004:80
+        networks:
+            - lamb-docker
     phpmyadmin:
+        depends_on:
+            - db
         image: phpmyadmin/phpmyadmin
         ports:
             - '8083:80'  # Corrected port mapping
         restart: always
         environment:
-            PMA_HOST: db
-        depends_on:
-            - db
+            - PMA_HOST=db  # Corrected environment variable syntax
+        networks:
+            - lamb-docker
+networks:
+    lamb-docker:
+        driver: bridge

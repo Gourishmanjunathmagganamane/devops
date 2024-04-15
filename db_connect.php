@@ -1,15 +1,17 @@
-<?php 
+<?php
 
-//$conn= new mysqli('localhost','root','','bloodbank_db')or die("Could not connect to mysql".mysqli_error($con));
+// Uncommented lines should not contain PHP opening tags
 
-//<?php
-//$servername = "db"; // MySQL hostname (service name in Docker Compose)
-//$username = "gourish"; // MySQL username
-//$password = "Gourish@12"; // MySQL password
-//$database = "bloodbank_db"; // MySQL database name
+// Old code:
+// //$conn= new mysqli('localhost','root','','bloodbank_db')or die("Could not connect to mysql".mysqli_error($con));
+// //
+// //$servername = "db"; // MySQL hostname (service name in Docker Compose)
+// //$username = "gourish"; // MySQL username
+// //$password = "Gourish@12"; // MySQL password
+// //$database = "bloodbank_db"; // MySQL database name
 
 // Create connection
-$connect = mysqli_connect(
+$conn = mysqli_connect(
     "db",
     "gourish",
     "Gourish@12",

@@ -1,5 +1,5 @@
 # Use an existing Apache PHP image
-FROM php:7.4-apache
+FROM php:8.1.1-apache
 
 # Set working directory
 WORKDIR /var/www/html
@@ -8,7 +8,7 @@ WORKDIR /var/www/html
 COPY . .
 
 # Set the default page to login.php
-RUN sed -i 's/DirectoryIndex index.php/DirectoryIndex db_connect.php index.php/g' /etc/apache2/mods-enabled/dir.conf
+RUN sed -i 's/DirectoryIndex index.php/DirectoryIndex login.php index.php/g' /etc/apache2/mods-enabled/dir.conf
 
 
 RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
