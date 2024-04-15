@@ -18,16 +18,16 @@ services:
         environment:
             MYSQL_ROOT_PASSWORD: MYSQL_ROOT_PASSWORD
             MYSQL_DATABASE: bloodbank_db
-            MYSQL_USER: MYSQL_USER
-            MYSQL_PASSWORD: MYSQL_PASSWORD
+            MYSQL_USER: gourish
+            MYSQL_PASSWORD: Gourish@12
         ports:
             - "9906:3306"
         volumes:
-            - ./database:/docker-entrypoint-initdb.d  # Mount the database directory for initializatio
+            - ./database:/docker-entrypoint-initdb.d  # Mount the database directory for initialization
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
         ports:
-            - '8083:83'
+            - '8083:80'  # Corrected port mapping
         restart: always
         environment:
             PMA_HOST: db
