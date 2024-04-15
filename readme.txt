@@ -8,19 +8,15 @@ FIRST Download
 
 3"Blood Bank System"
 
-4. Download the zip file/ download winrar
+4. clone the code inside root directory/ where you install xammp local disk C: drive D: drive E: paste: (for xampp/htdocs, 
 
-5. Extract the file and copy "Blood Bank System" folder
+5. Open PHPMyAdmin (http://localhost/phpmyadmin)
 
-6.Paste inside root directory/ where you install xammp local disk C: drive D: drive E: paste: (for xampp/htdocs, 
+6. Create a database with name bloodbank_db
 
-7. Open PHPMyAdmin (http://localhost/phpmyadmin)
+7. Import bloodbank_db.sql file(given inside the database folder in SQL file folder)
 
-8. Create a database with name bloodbank_db
-
-6. Import bloodbank_db.sql file(given inside the zip package in SQL file folder)
-
-7.Run the script http:/bloodbank
+8.Run the script http:/bloodbank
 **LOGIN DETAILS** 
 
 Admin
@@ -34,3 +30,11 @@ Subcribe my You tube Channel **** 1 Source code ****
 
 You can also docarize this :
 steps to docarise
+
+got to the htdocs folder and bloodbank folder
+
+open the cmd:got on top where path is there then remove the path and type cmd.it will open cammand prompt.
+
+type "docker-compose up"(Note: docker desktop should be open)
+
+
