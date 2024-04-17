@@ -1,17 +1,8 @@
 # Use an existing Apache PHP image
-FROM php:8.1.1-apache
+FROM php:7.2-apache
 
-# Set working directory
-WORKDIR /var/www/html
+RUN docker-php-ext-install mysqli
 
-# Copy your project files to the container
-COPY . .
-
-# Set the default page to login.php
-RUN sed -i 's/DirectoryIndex index.php/DirectoryIndex login.php index.php/g' /etc/apache2/mods-enabled/dir.conf
-
-
-RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 
 
 

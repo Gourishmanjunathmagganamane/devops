@@ -1,38 +1,38 @@
 version: '3'
 services:
+    www:
+        build: .
+        port:
+            -"8004:80"
+        volume:
+            - ./www:/var/www/html/
+        links:
+            - db
+        network:
+            -default
     db:
-        image: mysql
-        restart: always
+        image: mysql:5.7.28
+        port:
+            - "3306:3306"
         environment:
-            MYSQL_ROOT_PASSWORD: MYSQL_ROOT_PASSWORD
+            MYSQL_ROOT_PASSWORD: gourish
             MYSQL_DATABASE: bloodbank_db
             MYSQL_USER: gourish
-            MYSQL_PASSWORD: Gourish@12
+            MYSQL_PASSWORD: gourish
         volumes:
-            - "./database:/docker-entrypoint-initdb.d"  # Mount the database directory for initialization
+            - ./database:/docker-entrypoint-initdb.d
+            - persistent:/var/lib/mysql
         networks:
-            - lamb-docker
-    php-apache-environment:
-        depends_on:
-            - db
-        image: php:8.1.1-apache
-        volumes:
-            - "./:/var/www/html"
-        ports:
-            - 8004:80
-        networks:
-            - lamb-docker
+            - default
     phpmyadmin:
-        depends_on:
-            - db
         image: phpmyadmin/phpmyadmin
+        links:
+            - db:db
         ports:
-            - '8083:80'  # Corrected port mapping
-        restart: always
+            - 82:80
         environment:
-            - PMA_HOST=db  # Corrected environment variable syntax
-        networks:
-            - lamb-docker
-networks:
-    lamb-docker:
-        driver: bridge
+            MYSQL_ROOT_PASSWORD: gourish
+            MYSQL_USER: gourish
+            MYSQL_PASSWORD: gourish
+volumes:
+    persistent:
