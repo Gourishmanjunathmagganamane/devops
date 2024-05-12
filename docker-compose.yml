@@ -1,19 +1,22 @@
-version: '3'
+version: '3.8'
 services:
     www:
-        build: .
-        port:
-            -"8004:80"
-        volume:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - "8004:80"
+        volumes:
             - ./www:/var/www/html/
-        links:
+        depends_on:
             - db
-        network:
-            -default
+        networks:
+            - bloodbank
     db:
-        image: mysql:5.7.28
-        port:
-            - "3306:3306"
+        image: mysql:5.7
+        restart: always
+        ports:
+            - "3310:3310"
         environment:
             MYSQL_ROOT_PASSWORD: gourish
             MYSQL_DATABASE: bloodbank_db
@@ -21,18 +24,24 @@ services:
             MYSQL_PASSWORD: gourish
         volumes:
             - ./database:/docker-entrypoint-initdb.d
-            - persistent:/var/lib/mysql
+            - db_data:/var/lib/mysql
         networks:
-            - default
+            - bloodbank
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
-        links:
-            - db:db
+        restart: always
         ports:
-            - 82:80
+            - "82:80"
         environment:
             MYSQL_ROOT_PASSWORD: gourish
             MYSQL_USER: gourish
             MYSQL_PASSWORD: gourish
+            PMA_HOST: db
+        networks:
+            - bloodbank
+        depends_on:
+            - db
+networks:
+  bloodbank:
 volumes:
-    persistent:
+  db_data:

@@ -14,6 +14,6 @@
 $conn = mysqli_connect(
     "db",
     "gourish",
-    "Gourish@12",
+    "gourish",
     "bloodbank_db"
 );
