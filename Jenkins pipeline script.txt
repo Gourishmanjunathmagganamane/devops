@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out source code...'
+                git branch: 'master', url: 'https://github.com/Gourishmanjunathmagganamane/devops.git'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                bat 'docker-compose -f "D:/Gourish/devops/bloodbank/devops/docker-compose.yml" up -d --build'
+            }
+        }
+
+        stage('Deploy') {
+            steps {    
+                script {
+                    try {
+                        bat 'docker compose up'
+                    } 
+                    catch (Exception e) {
+                        echo "Pipeline aborted: Successfully "
+                    }
+                }
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}
