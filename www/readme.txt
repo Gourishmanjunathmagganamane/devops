@@ -23,17 +23,14 @@ Admin
 user: admin
 pass: admin123
 
-
 ****** https:1sourcecodr.blogspot.com ******
-Subcribe my You tube Channel **** 1 Source code ****
-
 
 You can also docarize this :
 steps to docarise
 
-got to the htdocs folder and bloodbank folder
+go to the folder and bloodbank folder (or where docker-compode file id there)
 
-open the cmd:got on top where path is there then remove the path and type cmd.it will open cammand prompt.
+open the cmd: on top where path is there then remove the path and type cmd.it will open cammand prompt.
 
 type "docker-compose up"(Note: docker desktop should be open)
 
