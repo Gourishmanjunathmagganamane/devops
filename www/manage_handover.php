@@ -1,4 +1,5 @@
 <?php 
+session_start();
 include 'db_connect.php'; 
 if(isset($_GET['id'])){
 $qry = $conn->query("SELECT hr.*,r.patient,r.blood_group, r.volume,r.ref_code FROM handedover_request hr inner join requests r on r.id = hr.request_id where hr.id= ".$_GET['id']);

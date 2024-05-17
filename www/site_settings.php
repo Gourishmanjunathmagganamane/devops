@@ -1,4 +1,5 @@
 <?php
+session_start();
 include 'db_connect.php';
 $qry = $conn->query("SELECT * from system_settings limit 1");
 if($qry->num_rows > 0){

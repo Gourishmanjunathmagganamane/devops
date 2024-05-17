@@ -1,4 +1,7 @@
-<?php include('db_connect.php');?>
+<?php 
+session_start();
+include('db_connect.php');
+?>
 
 <div class="container-fluid">
 	
