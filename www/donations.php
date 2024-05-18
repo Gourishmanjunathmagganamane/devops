@@ -1,126 +1,146 @@
-<?php
+<?php 
+ob_start(); // Start output buffering at the very beginning
 session_start();
-include('db_connect.php');
+include('./db_connect.php');
+
+if(!isset($_SESSION['system'])){
+	$system = $conn->query("SELECT * FROM system_settings limit 1")->fetch_array();
+	foreach($system as $k => $v){
+		$_SESSION['system'][$k] = $v;
+	}
+}
+
+if(isset($_SESSION['login_id'])) {
+	header("location:index.php?page=home");
+	exit(); // Always use exit() after header redirection
+}
+
+ob_end_flush(); // End output buffering and flush the output
 ?>
+<!DOCTYPE html>
+<html lang="en">
 
-<div class="container-fluid">
-	
-	<div class="col-lg-12">
-		<div class="row mb-4 mt-4">
-			<div class="col-md-12">
-				
-			</div>
-		</div>
-		<div class="row">
-			<!-- FORM Panel -->
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-			<!-- Table Panel -->
-			<div class="col-md-12">
-				<div class="card">
-					<div class="card-header">
-						<b>List of Donations</b>
-						<span class="float:right"><a class="btn btn-primary btn-block btn-sm col-sm-2 float-right" href="javascript:void(0)" id="new_donation">
-					<i class="fa fa-plus"></i> New Entry
-				</a></span>
-					</div>
-					<div class="card-body">
-						<table class="table table-condensed table-bordered table-hover">
-							<thead>
-								<tr>
-									<th class="text-center">#</th>
-									<th class="">Date</th>
-									<th class="">Donor</th>
-									<th class="">Blood Group</th>
-									<th class="">Volume (ml)</th>
-									<th class="text-center">Action</th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php 
-								$i = 1;
-								$donor = $conn->query("SELECT * FROM donors");
-								while($row=$donor->fetch_assoc()){
-									$dname[$row['id']] = ucwords($row['name']);
-								}
-								$donations = $conn->query("SELECT * FROM blood_inventory where status = 1 order by date(date_created) desc ");
-								while($row=$donations->fetch_assoc()):
-									
-								?>
-								<tr>
-									<td class="text-center"><?php echo $i++ ?></td>
-									<td>
-										<?php echo date('M d, Y',strtotime($row['date_created'])) ?>
-									</td>
-									<td class="">
-										 <p> <b><?php echo isset($dname[$row['donor_id']]) ? $dname[$row['donor_id']] : 'Donor was removed from the list.' ?></b></p>
-									</td>
-									<td class="">
-										 <p> <b><?php echo $row['blood_group'] ?></b></p>
-									</td>
-									<td class="">
-										 <p><b><?php echo $row['volume']; ?></b></p>
-									</td>
-									<td class="text-center">
-										<button class="btn btn-sm btn-outline-primary edit_donation" type="button" data-id="<?php echo $row['id'] ?>" >Edit</button>
-										<button class="btn btn-sm btn-outline-danger delete_donation" type="button" data-id="<?php echo $row['id'] ?>">Delete</button>
-									</td>
-								</tr>
-								<?php endwhile; ?>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-			<!-- Table Panel -->
-		</div>
-	</div>	
-
-</div>
+  <title><?php echo $_SESSION['system']['name'] ?></title>
+ 	
+  <?php include('./header.php'); ?>
+</head>
 <style>
-	
-	td{
-		vertical-align: middle !important;
+	body{
+		width: 100%;
+	    height: calc(100%);
+	    /*background: #007bff;*/
 	}
-	td p{
-		margin: unset
+	main#main{
+		width:100%;
+		height: calc(100%);
+		background:white;
 	}
-	img{
-		max-width:100px;
-		max-height: :150px;
+	#login-right{
+		position: absolute;
+		right:0;
+		width:40%;
+		height: calc(100%);
+		background:white;
+		display: flex;
+		align-items: center;
 	}
-</style>
-<script>
-	$(document).ready(function(){
-		$('table').dataTable()
-	})
-	
-	$('#new_donation').click(function(){
-		uni_modal("New donation","manage_donation.php","mid-large")
-		
-	})
-	$('.edit_donation').click(function(){
-		uni_modal("Manage donation Details","manage_donation.php?id="+$(this).attr('data-id'),"mid-large")
-		
-	})
-	$('.delete_donation').click(function(){
-		_conf("Are you sure to delete this donation?","delete_donation",[$(this).attr('data-id')])
-	})
-	
-	function delete_donation($id){
-		start_load()
-		$.ajax({
-			url:'ajax.php?action=delete_donation',
-			method:'POST',
-			data:{id:$id},
-			success:function(resp){
-				if(resp==1){
-					alert_toast("Data successfully deleted",'success')
-					setTimeout(function(){
-						location.reload()
-					},1500)
+	#login-left{
+		position: absolute;
+		left:0;
+		width:60%;
+		height: calc(100%);
+		background:#59b6ec61;
+		display: flex;
+		align-items: center;
+		background: url(assets/uploads/blood-cells.jpg);
+	    background-repeat: no-repeat;
+	    background-size: cover;
+	}
+	#login-right .card{
+		margin: auto;
+		z-index: 1
+	}
+	.logo {
+    margin: auto;
+    font-size: 8rem;
+    background: white;
+    padding: .5em 0.7em;
+    border-radius: 50% 50%;
+    color: #000000b3;
+    z-index: 10;
+}
+div#login-right::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(100%);
+    height: calc(100%);
+    /*background: #000000e0;*/
+}
 
+</style>
+
+<body>
+
+  <main id="main" class=" bg-danger">
+  		<div id="login-left">
+  		</div>
+
+  		<div id="login-right" class="bg-danger">
+  			<div class="w-100">
+			<h4 class="text-white text-center"><b><?php echo $_SESSION['system']['name'] ?></b></h4>
+			<br>
+			<br>
+  			<div class="card col-md-8">
+  				<div class="card-body">
+  					<form id="login-form" >
+  						<div class="form-group">
+  							<label for="username" class="control-label">Username</label>
+  							<input type="text" id="username" name="username" class="form-control">
+  						</div>
+  						<div class="form-group">
+  							<label for="password" class="control-label">Password</label>
+  							<input type="password" id="password" name="password" class="form-control">
+  						</div>
+  						<center><button class="btn-sm btn-block btn-wave col-md-4 btn-primary">Login</button></center>
+  					</form>
+  				</div>
+  			</div>
+  			</div>
+  		</div>
+  </main>
+
+  <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
+
+</body>
+<script>
+	$('#login-form').submit(function(e){
+		e.preventDefault()
+		$('#login-form button[type="button"]').attr('disabled',true).html('Logging in...');
+		if($(this).find('.alert-danger').length > 0 )
+			$(this).find('.alert-danger').remove();
+		$.ajax({
+			url:'ajax.php?action=login',
+			method:'POST',
+			data:$(this).serialize(),
+			error:err=>{
+				console.log(err)
+				$('#login-form button[type="button"]').removeAttr('disabled').html('Login');
+			},
+			success:function(resp){
+				if(resp == 1){
+					location.href ='index.php?page=home';
+				}else{
+					$('#login-form').prepend('<div class="alert alert-danger">Username or password is incorrect.</div>')
+					$('#login-form button[type="button"]').removeAttr('disabled').html('Login');
 				}
 			}
 		})
-	}
-</script>
+	})
+</script>	
+</html>
